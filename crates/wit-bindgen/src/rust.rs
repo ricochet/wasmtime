@@ -113,6 +113,8 @@ pub trait RustGenerator<'a> {
                     | TypeDefKind::Result(_)
                     | TypeDefKind::Future(_)
                     | TypeDefKind::Stream(_)
+                    | TypeDefKind::Resource
+                    | TypeDefKind::Handle(_)
                     | TypeDefKind::List(_)
                     | TypeDefKind::Flags(_)
                     | TypeDefKind::Enum(_)
@@ -146,6 +148,8 @@ pub trait RustGenerator<'a> {
             }
 
             TypeDefKind::Variant(_) => panic!("unsupported anonymous variant"),
+            TypeDefKind::Resource => panic!("unsupported anonymous resource"),
+            TypeDefKind::Handle(_) => panic!("unsupported anonymous handle"),
 
             // Tuple-like records are mapped directly to Rust tuples of
             // types. Note the trailing comma after each member to
@@ -292,6 +296,8 @@ pub trait RustGenerator<'a> {
                         TypeDefKind::Variant(_) => out.push_str("Variant"),
                         TypeDefKind::Enum(_) => out.push_str("Enum"),
                         TypeDefKind::Union(_) => out.push_str("Union"),
+                        TypeDefKind::Resource => out.push_str("Resource"),
+                        TypeDefKind::Handle(_) => out.push_str("Handle"),
                         TypeDefKind::Unknown => unreachable!(),
                     },
                 }

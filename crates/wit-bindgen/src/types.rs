@@ -142,6 +142,12 @@ impl Types {
             TypeDefKind::Option(ty) => {
                 info = self.type_info(resolve, ty);
             }
+            TypeDefKind::Resource => {
+                todo!("resource")
+            }
+            TypeDefKind::Handle(_ty) => {
+                todo!("handle")
+            }
             TypeDefKind::Result(r) => {
                 info = self.optional_type_info(resolve, r.ok.as_ref());
                 info |= self.optional_type_info(resolve, r.err.as_ref());
