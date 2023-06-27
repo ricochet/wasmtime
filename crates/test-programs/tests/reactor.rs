@@ -66,7 +66,7 @@ async fn instantiate(
     component: Component,
     wasi_ctx: ReactorCtx,
 ) -> Result<(Store<ReactorCtx>, TestReactor)> {
-    let mut linker = Linker::new(&ENGINE);
+    let mut linker: Linker<ReactorCtx> = Linker::new(&ENGINE);
 
     // All of the imports available to the world are provided by the wasi-common crate:
     preview2::wasi::filesystem::filesystem::add_to_linker(&mut linker, |x| x)?;

@@ -220,8 +220,8 @@ fn build_raw_intrinsics() -> Vec<u8> {
 
         subsection.encode(&mut linking);
         module.section(&CustomSection {
-            name: "linking",
-            data: &linking,
+            name: std::borrow::Cow::Borrowed("linking"),
+            data: std::borrow::Cow::Borrowed(&linking),
         });
     }
 
@@ -257,8 +257,8 @@ fn build_raw_intrinsics() -> Vec<u8> {
         8u32.encode(&mut reloc); // symbol index
 
         module.section(&CustomSection {
-            name: "reloc.CODE",
-            data: &reloc,
+            name: std::borrow::Cow::Borrowed("reloc.CODE"),
+            data: std::borrow::Cow::Borrowed(&reloc),
         });
     }
 

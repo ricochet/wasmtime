@@ -11,7 +11,8 @@ wit-bindgen = { workspace = true, default-features = false, features = ["macros"
 byte-array-literals = { workspace = true }
 
 [build-dependencies]
-wasm-encoder = "0.25"
+wasm-encoder = { workspace = true }
+wit-bindgen = { workspace = true }
 object = { version = "0.30.0", default-features = false, features = ["archive"] }
 
 [lib]
