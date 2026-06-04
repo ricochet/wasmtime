@@ -482,6 +482,22 @@ impl Wasmtime {
         named_import_key: &str,
         id_type: &str,
     ) -> anyhow::Result<()> {
+        // Named imports don't regenerate the interface's types or its normal
+        // `Host` trait; instead the generated bindings reference the interface's
+        // "regular" import bindings (e.g. for type definitions). Those are only
+        // emitted when the interface is imported by the world, so require that
+        // here. Without this check codegen would later panic while indexing
+        // `interface_link_options`/`interface_names` for an interface that was
+        // never registered.
+        if !self.interface_link_options.contains_key(&id) {
+            bail!(
+                "the interface {named_import_key:?} was specified in \
+                `named_imports` but is not imported by the world; add it as a \
+                regular import (e.g. `import {named_import_key};`) so that its \
+                types and bindings are generated"
+            );
+        }
+
         // Resources are not supported for named imports just yet, it's a bit
         // weird with the resource traits.
         if get_resources(resolve, id).next().is_some() {

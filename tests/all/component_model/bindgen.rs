@@ -1291,3 +1291,127 @@ mod named_imports {
         Ok(())
     }
 }
+
+mod named_imports_concurrent {
+    use super::*;
+    use wasmtime::component::{Accessor, HasData};
+
+    /// Host-chosen id type threaded into every (async) method call.
+    #[derive(Clone)]
+    pub struct MyId(u32);
+
+    wasmtime::component::bindgen!({
+        inline: "
+            package demo:pkg;
+
+            interface store {
+                ping: async func();
+            }
+
+            world cache {
+                import store;
+
+                export run: async func();
+            }
+        ",
+        named_imports: {
+            "demo:pkg/store": MyId,
+        },
+    });
+
+    // A component which imports the `store` interface twice, under names `a`
+    // and `b`, each annotated as implementing `demo:pkg/store`, with all
+    // functions using the async ABI. The exported `run` pings through both
+    // imports so the host can observe both ids.
+    const COMPONENT: &str = r#"
+        (component
+            (import "a" (implements "demo:pkg/store") (instance $a
+                (export "ping" (func async))
+            ))
+            (import "b" (implements "demo:pkg/store") (instance $b
+                (export "ping" (func async))
+            ))
+
+            (core module $libc
+                (memory (export "memory") 1)
+            )
+            (core instance $libc-instance (instantiate $libc))
+            (core module $m
+                (import "" "a-ping" (func $a-ping (result i32)))
+                (import "" "b-ping" (func $b-ping (result i32)))
+                (import "" "task.return" (func $task-return))
+                (func (export "run") (result i32)
+                    call $a-ping
+                    drop
+                    call $b-ping
+                    drop
+                    call $task-return
+                    i32.const 0
+                )
+                (func (export "callback") (param i32 i32 i32) (result i32) unreachable)
+            )
+            (core func $a-ping-l (canon lower (func $a "ping") async (memory $libc-instance "memory")))
+            (core func $b-ping-l (canon lower (func $b "ping") async (memory $libc-instance "memory")))
+            (core func $task-return (canon task.return))
+            (core instance $i (instantiate $m
+                (with "" (instance
+                    (export "task.return" (func $task-return))
+                    (export "a-ping" (func $a-ping-l))
+                    (export "b-ping" (func $b-ping-l))
+                ))
+            ))
+
+            (func (export "run") async
+                (canon lift (core func $i "run") async (callback (func $i "callback")))
+            )
+        )
+    "#;
+
+    #[derive(Default)]
+    struct MyHost {
+        ids: Vec<u32>,
+    }
+
+    impl HasData for MyHost {
+        type Data<'a> = &'a mut MyHost;
+    }
+
+    impl named_imports::demo::pkg::store::HostWithStore for MyHost {
+        async fn ping<T>(accessor: &Accessor<T, Self>, id: MyId) {
+            accessor.with(|mut view| view.get().ids.push(id.0));
+        }
+    }
+
+    impl named_imports::demo::pkg::store::Host for MyHost {}
+
+    #[tokio::test]
+    async fn ids_are_threaded_through_async() -> Result<()> {
+        let mut config = Config::new();
+        config.wasm_component_model_async(true);
+        config.wasm_component_model_implements(true);
+        let engine = Engine::new(&config)?;
+
+        let component = Component::new(&engine, COMPONENT)?;
+        let mut linker = Linker::new(&engine);
+        named_imports::demo::pkg::store::add_to_linker::<_, MyHost>(
+            &mut linker,
+            &component,
+            |name| match name {
+                "a" => Ok(MyId(1)),
+                "b" => Ok(MyId(2)),
+                other => wasmtime::bail!("unexpected import: {other}"),
+            },
+            |x| x,
+        )?;
+        let mut store = Store::new(&engine, MyHost::default());
+        let cache = Cache::instantiate_async(&mut store, &component, &linker).await?;
+        store
+            .run_concurrent(async move |accessor| cache.call_run(accessor).await)
+            .await??;
+
+        let ids = &store.data().ids;
+        assert!(ids.contains(&1), "ids: {ids:?}");
+        assert!(ids.contains(&2), "ids: {ids:?}");
+        Ok(())
+    }
+}

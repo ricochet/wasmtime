@@ -476,6 +476,11 @@ pub(crate) use self::store::ComponentStoreData;
 ///     //
 ///     // The id type must be `Clone + Send + Sync + 'static`. Interfaces that
 ///     // define a resource are not supported here and cause a compile error.
+///     //
+///     // Each interface listed here must also be imported by the world (the
+///     // named-imports bindings reference the interface's regular bindings for
+///     // its type definitions). Listing an interface that the world does not
+///     // import is a compile error.
 ///     named_imports: {
 ///         "wasi:http/handler": MyHandlerId,
 ///     },

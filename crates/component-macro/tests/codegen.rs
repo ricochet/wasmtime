@@ -884,4 +884,44 @@ mod named_imports {
             imports: { default: async | store },
         });
     }
+
+    // A named-imports interface that uses a non-primitive (record) type in its
+    // function signatures. The generated named-imports `Host` trait references
+    // the type from the interface's regular imported bindings, so this exercises
+    // the cross-module type path.
+    mod record_types {
+        wasmtime::component::bindgen!({
+            inline: "
+                package foo:foo;
+
+                interface handler {
+                    record request {
+                        body: u32,
+                    }
+                    handle: func(req: request) -> u32;
+                }
+
+                world the-world {
+                    import handler;
+                }
+            ",
+            named_imports: {
+                "foo:foo/handler": String,
+            },
+        });
+
+        struct MyHost;
+
+        impl foo::foo::handler::Host for MyHost {
+            fn handle(&mut self, req: foo::foo::handler::Request) -> u32 {
+                req.body
+            }
+        }
+
+        impl named_imports::foo::foo::handler::Host for MyHost {
+            fn handle(&mut self, _id: String, req: foo::foo::handler::Request) -> u32 {
+                req.body
+            }
+        }
+    }
 }
