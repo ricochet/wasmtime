@@ -1652,8 +1652,8 @@ user-login = "alexcrichton"
 user-name = "Alex Crichton"
 
 [[publisher.json-from-wast]]
-version = "0.252.0"
-when = "2026-06-12"
+version = "0.253.0"
+when = "2026-07-07"
 trusted-publisher = "github:bytecodealliance/wasm-tools"
 
 [[publisher.libc]]
@@ -2132,8 +2132,8 @@ user-login = "alexcrichton"
 user-name = "Alex Crichton"
 
 [[publisher.wasm-compose]]
-version = "0.252.0"
-when = "2026-06-12"
+version = "0.253.0"
+when = "2026-07-07"
 trusted-publisher = "github:bytecodealliance/wasm-tools"
 
 [[publisher.wasm-encoder]]
@@ -2147,8 +2147,8 @@ when = "2026-05-28"
 trusted-publisher = "github:bytecodealliance/wasm-tools"
 
 [[publisher.wasm-encoder]]
-version = "0.252.0"
-when = "2026-06-12"
+version = "0.253.0"
+when = "2026-07-07"
 trusted-publisher = "github:bytecodealliance/wasm-tools"
 
 [[publisher.wasm-metadata]]
@@ -2163,13 +2163,13 @@ when = "2026-05-28"
 trusted-publisher = "github:bytecodealliance/wasm-tools"
 
 [[publisher.wasm-metadata]]
-version = "0.252.0"
-when = "2026-06-12"
+version = "0.253.0"
+when = "2026-07-07"
 trusted-publisher = "github:bytecodealliance/wasm-tools"
 
 [[publisher.wasm-wave]]
-version = "0.252.0"
-when = "2026-06-12"
+version = "0.253.0"
+when = "2026-07-07"
 trusted-publisher = "github:bytecodealliance/wasm-tools"
 
 [[publisher.wasmparser]]
@@ -2183,13 +2183,13 @@ when = "2026-05-28"
 trusted-publisher = "github:bytecodealliance/wasm-tools"
 
 [[publisher.wasmparser]]
-version = "0.252.0"
-when = "2026-06-12"
+version = "0.253.0"
+when = "2026-07-07"
 trusted-publisher = "github:bytecodealliance/wasm-tools"
 
 [[publisher.wasmprinter]]
-version = "0.252.0"
-when = "2026-06-12"
+version = "0.253.0"
+when = "2026-07-07"
 trusted-publisher = "github:bytecodealliance/wasm-tools"
 
 [[publisher.wasmtime]]
@@ -2343,13 +2343,13 @@ when = "2026-07-20"
 trusted-publisher = "github:bytecodealliance/wasmtime"
 
 [[publisher.wast]]
-version = "252.0.0"
-when = "2026-06-12"
+version = "253.0.0"
+when = "2026-07-07"
 trusted-publisher = "github:bytecodealliance/wasm-tools"
 
 [[publisher.wat]]
-version = "1.252.0"
-when = "2026-06-12"
+version = "1.253.0"
+when = "2026-07-07"
 trusted-publisher = "github:bytecodealliance/wasm-tools"
 
 [[publisher.wiggle]]
@@ -2638,8 +2638,8 @@ when = "2026-05-28"
 trusted-publisher = "github:bytecodealliance/wasm-tools"
 
 [[publisher.wit-component]]
-version = "0.252.0"
-when = "2026-06-12"
+version = "0.253.0"
+when = "2026-07-07"
 trusted-publisher = "github:bytecodealliance/wasm-tools"
 
 [[publisher.wit-parser]]
@@ -2653,8 +2653,8 @@ when = "2026-05-28"
 trusted-publisher = "github:bytecodealliance/wasm-tools"
 
 [[publisher.wit-parser]]
-version = "0.252.0"
-when = "2026-06-12"
+version = "0.253.0"
+when = "2026-07-07"
 trusted-publisher = "github:bytecodealliance/wasm-tools"
 
 [[publisher.witx]]
